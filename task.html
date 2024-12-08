@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center mb-5" style="font-size: 2.5rem; color: #343a40;">Task Management</h1>
+
+<!-- Task Form Section -->
+<div class="container mb-5">
+    <form method="POST" id="taskForm">
+        {{ form.hidden_tag() }}
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="description" class="form-label">{{ form.description.label }}</label>
+                {{ form.description(class="form-control", id="description") }}
+            </div>
+            <div class="col-md-4">
+                <label for="due_date" class="form-label">{{ form.due_date.label }}</label>
+                {{ form.due_date(class="form-control", id="due_date") }}
+            </div>
+            <div class="col-md-4">
+                <label for="status" class="form-label">{{ form.status.label }}</label>
+                {{ form.status(class="form-control", id="status") }}
+            </div>
+        </div>
+        <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary btn-lg" id="submitTaskBtn">{{ 'Add Task' }}</button>
+        </div>
+    </form>
+</div>
+
+<!-- Task List Section -->
+<div class="container">
+    <h2 class="text-center mb-4" style="font-size: 2rem; color: #343a40;">Task List</h2>
+    <div class="list-group" id="taskList">
+        {% for task in tasks %}
+            <div class="list-group-item list-group-item-action mb-2 task-item" data-task-id="{{ task.id }}">
+                <div class="d-flex justify-content-between">
+                    <h5 class="mb-1 task-description" style="font-size: 1.25rem; color: #343a40;">{{ task.description }}</h5>
+                    <button class="btn btn-danger btn-sm delete-btn" onclick="deleteTask({{ task.id }})">Delete</button>
+                </div>
+                <p class="mb-1 task-due-date" style="font-size: 1rem; color: #555;">Due: {{ task.due_date }}</p>
+                <p class="mb-1 task-status" style="font-size: 1rem; color: #555;">Status: {{ task.status }}</p>
+                <button class="btn btn-warning btn-sm update-btn" onclick="editTask({{ task.id }})">Update</button>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+<!-- Custom CSS and JavaScript -->
+<style>
+    body {
+        background-color: #f4f4f9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .container {
+        max-width: 900px;
+    }
+    h1, h2 {
+        color: #343a40;
+        font-weight: bold;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        font-size: 1.2rem;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: bold;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+    .btn-warning {
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+</style>
+
+<!-- JavaScript -->
+<script>
+    function deleteTask(taskId) {
+        // Use Fetch API to send a DELETE request to Flask backend
+        if (confirm("Are you sure you want to delete this task?")) {
+            fetch(`/delete_task/${taskId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Remove the task item from the DOM
+                    document.querySelector(`.task-item[data-task-id='${taskId}']`).remove();
+                } else {
+                    alert('Failed to delete task. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the task.');
+            });
+        }
+    }
+
+    function editTask(taskId) {
+        // Redirect to the edit page for the task
+        window.location.href = `/edit_task/${taskId}`; // Replace with the correct Flask route
+    }
+</script>

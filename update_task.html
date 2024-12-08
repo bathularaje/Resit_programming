@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center mb-5" style="font-size: 2.5rem; color: #343a40;">Update Task</h1>
+
+<div class="container mb-5">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="description" class="form-label">{{ form.description.label }}</label>
+                {{ form.description(class="form-control", id="description") }}
+            </div>
+            <div class="col-md-4">
+                <label for="due_date" class="form-label">{{ form.due_date.label }}</label>
+                {{ form.due_date(class="form-control", id="due_date") }}
+            </div>
+            <div class="col-md-4">
+                <label for="status" class="form-label">{{ form.status.label }}</label>
+                {{ form.status(class="form-control", id="status") }}
+            </div>
+        </div>
+        <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary btn-lg" id="submitTaskBtn">{{ 'Update Task' }}</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
